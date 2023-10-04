@@ -1,0 +1,23 @@
+# variables
+FC=gfortran
+CFLAGS=-c -g -Og -Wall
+
+# linking
+a.out: main.o
+	$(FC) main.o
+
+# compiling
+main.o: main.f95
+	$(FC) $(CFLAGS) main.f95
+
+# celanup
+clean:
+	rm *.o a.out
+# run
+run:
+	make
+	./a.out
+	gnuplot -p plot_g_m.gnu
+	# gnuplot -p plot_path.gnu
+	okular plot_g_m.png
+	# okular plot_X_t.png

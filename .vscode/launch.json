@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "miDebuggerPath": "/usr/bin/gdb",
+            "name": "Run GBD",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/tests/mod_milstein_solver_test.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "preLaunchTask": "make",
+        }
+    ]
+}
