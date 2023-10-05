@@ -39,8 +39,8 @@ program mod_milstein_sampler_test
     open(unit=1, file=filename, status='replace', &
         action='write', form='formatted')
     write(1, *) header
-    300 format(i4, ',', f12.4, ',', f12.4)
-    write(1, 300) i, (i - 1) * delta, x_milstein_path(i)
+    300 format(i4, a, f12.4, a, f12.4)
+    write(1, 300) i, sep, (i - 1) * delta, sep, x_milstein_path(i)
     do i=2, grid_size
         call get_brownian_increment(delta, brownian_start,  brownian_end)
         call compute_drift(alpha_0, m_0, current_state, current_drift)
@@ -51,9 +51,9 @@ program mod_milstein_sampler_test
         x_milstein_path(i) = x_milstein_t
         current_state = x_milstein_t
         brownian_start = brownian_end
-        write(1,300) i, (i - 1) * delta, x_milstein_path(i)
+        write(1,300) i, sep, (i - 1) * delta, sep, x_milstein_path(i)
         if(mod(i, 100) == 0) then
-            print*,i,(i-1) * delta, x_milstein_path(i)
+            print*,  i, (i-1) * delta, x_milstein_path(i)
         end if
     end do
  end program mod_milstein_sampler_test
