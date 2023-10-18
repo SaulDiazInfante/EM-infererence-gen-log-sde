@@ -9,16 +9,19 @@ program mod_brownian_motion_test
     time_horizon = 16.0
     n_resolution = 2048
     r_operative_factor = 64
-    n_operative = 2048
+    n_operative = 0
+    h_op = 0.0
     seed_put = 123456
     call get_brownian_path(&
         &n_resolution, &
         &r_operative_factor, &
         &time_horizon, &
         &brownian_path, &
+        &h_op, &
+        &n_operative, &
         &user_seed=123456, &
         &debug = .true. &
     &)
-    print*,"Hello Brownian path"
-    print *, "head(B_t):=", brownian_path(1:100)
+    print*,"Hello Brownian path (n_op, h_op)= ", n_operative, h_op
+    print *, "head(B_t):=", brownian_path(1:5)
 end program mod_brownian_motion_test

@@ -60,15 +60,22 @@ contains
         r_x = boxmuller()
     end function normalvar
 
-    subroutine mkl_gaussian_sampler(buffer_size, mean_a, std_a, user_seed,&
-        & gaussian_sample)
+    subroutine mkl_gaussian_sampler(&
+        &buffer_size, &
+        &mean_a, &
+        &std_a, &
+        &user_seed, &
+        &gaussian_sample, &
+        &debug&
+    &)
         integer, intent(in) :: buffer_size
         real(kind=8), intent(in) :: mean_a, std_a
         real(kind=8), intent(out), allocatable :: gaussian_sample(:)
+        logical, intent(in), optional :: debug
         TYPE (VSL_STREAM_STATE) :: stream
         integer(kind=4) errcode
         integer(kind=4) i, j
-        integer(kind=4), intent(in), optional :: user_seed
+        integer, intent(in), optional :: user_seed
         integer brng, seed, method, n
         if (present(user_seed)) then
             seed = user_seed
@@ -83,7 +90,12 @@ contains
         errcode = vdRngGaussian(&
             method, stream, buffer_size, gaussian_sample, mean_a, std_a&
         )
-        print *,"Error structure = ", stream
+        if (present(debug)) then
+            if (debug) then
+              print *,"Error structure = ", stream
+              print *, "Gaussian stream: ", gaussian_sample(1:5)
+            end if
+        end if
     !       ***** Deinitialize *****
         errcode = vslDeleteStream(stream)
     end subroutine mkl_gaussian_sampler

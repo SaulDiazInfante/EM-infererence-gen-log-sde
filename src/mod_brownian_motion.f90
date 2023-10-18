@@ -31,18 +31,24 @@ contains
             &r_operative_factor, &
             &time_horizon, &
             &brownian_path, &
+            &h_op, &
+            &n_operative, &
             &user_seed, &
             &debug&
-    )
+    &)
         implicit none
         integer, intent(in) :: n_resolution, r_operative_factor
         real(kind=8), intent(in) :: time_horizon
         real(kind=8), intent(out), allocatable :: brownian_path(:)
+        real(kind=8), intent(out) :: h_op
+        integer(kind=4), intent(out) :: n_operative
         integer, intent(in), optional :: user_seed
         logical, intent(in), optional :: debug
-        integer(kind=4) :: n_operative, i, j, idx_start, idx_end,&
-                &seed_get,  seed_put
-        real(kind=8) h_op, h_res, xi, browinian_operative_inc, &
+        TYPE (VSL_STREAM_STATE) :: stream
+        integer(kind=4) :: i, j, idx_start, idx_end,&
+                &seed_get, errcode
+        integer :: brng, seed_put, method, n
+        real(kind=8) h_res, xi, browinian_operative_inc, &
                 browinian_resolution_inc, mean_a, std_a, w_inc, w_t_i
         real(kind=8), allocatable :: gaussian_sample(:), &
                 &resolution_path(:)
@@ -56,21 +62,21 @@ contains
         else
                 seed_put = 394569125
         end if
+        brng = VSL_BRNG_MT19937
+        errcode = vslNewStream(stream, brng, seed_put)
         mean_a = 0.0
         std_a = 1.0
         w_inc = 0.0
         w_t_i = 0
         h_res = time_horizon / n_resolution
         if (r_operative_factor > 1 ) then
-                h_op = r_operative_factor * h_res
-                n_operative = &
-                        &NINT(real(n_resolution, 4) / &
-                        &real(r_operative_factor, 4))
-        print *, "operative factor: ", r_operative_factor
-        print *, "n_operative: ", n_operative
+            h_op = r_operative_factor * h_res
+            n_operative = &
+                &NINT(real(n_resolution, 4) / &
+                    &real(r_operative_factor, 4))
         else if (r_operative_factor == 1) then
-                h_op = h_res
-                n_operative = n_resolution
+            h_op = h_res
+            n_operative = n_resolution
         end if
         brownian_path = [(0.0, i=0, n_operative)]
         gaussian_sample = [(0.0, i=1, n_resolution)]
@@ -78,11 +84,10 @@ contains
         call mkl_gaussian_sampler(n_resolution, mean_a, dsqrt(h_res), &
                 &seed_put, gaussian_sample)
         resolution_path(1:n_resolution) = &
-                &[(sum(gaussian_sample(1:i)),&
-                        &i = 1,&
-                        &size(gaussian_sample)&
-                &)]
-! print*, "head(Bt_n):=", resolution_path(1:100)
+            &[(sum(gaussian_sample(1:i)),&
+                &i = 1,&
+                &size(gaussian_sample)&
+            &)]
         j = 1
         header = 'i' // sep // 't_i' // sep // 'W(t_i)'
 
@@ -93,30 +98,34 @@ contains
         write(1, *) header
         write(1, fmt=csv_fmt) 0, sep, 0.0, sep, 0.0
         do j=1, n_operative
-                idx_start = r_operative_factor * (j - 1) + 1
-                idx_end = r_operative_factor * j
-                w_inc = sum(gaussian_sample(idx_start:idx_end))
-                !print *, "dWk_i: ", w_inc
-                brownian_path(j) = w_inc
-                w_t_i = w_t_i + w_inc
-                write(1, fmt=csv_fmt) j, sep, j * h_op, sep, w_t_i
+            idx_start = r_operative_factor * (j - 1) + 1
+            idx_end = r_operative_factor * j
+            w_inc = sum(gaussian_sample(idx_start:idx_end))
+            !print *, "dWk_i: ", w_inc
+            brownian_path(j) = w_inc
+            w_t_i = w_t_i + w_inc
+            write(1, fmt=csv_fmt) j, sep, j * h_op, sep, w_t_i
         end do
         close(unit=1)
-        ! print*, "head(B_tau_n):=", brownian_path(1:5)
         if (present(debug)) then
-                if(debug) then
-                        filename = 'data/res_sample_path.csv'
-                        open(unit=10, file=filename, status='replace', &
-                        action='write', form='formatted')
-                        write(10, *) header
-                        write(10, 200) 0, sep, 0.0, sep, 0.0
-                        do i=1, n_resolution
-                                write(10, 200) i, sep, &
-                                        &i * h_res, sep, &
-                                        &resolution_path(i)
-                        end do
-                end if
-                close(unit=10)
+            if(debug) then
+                filename = 'data/res_sample_path.csv'
+                open(unit=10, file=filename, status='replace', &
+                action='write', form='formatted')
+                write(10, *) header
+                write(10, 200) 0, sep, 0.0, sep, 0.0
+                print *, "operative factor: ", r_operative_factor
+                print *, "n_operative: ", n_operative
+                print*, "head(B_tau_n):=", brownian_path(1:5)
+                print*, '(===)random Stream state', errcode
+                do i=1, n_resolution
+                    write(10, 200) i, sep, &
+                        &i * h_res, sep, &
+                        &resolution_path(i)
+                end do
+                print*, "head(B_t_n):=", resolution_path(1:5)
+            end if
+            close(unit=10)
         end if
     end subroutine get_brownian_path
 end module mod_brownian_motion

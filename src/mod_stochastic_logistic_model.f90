@@ -15,7 +15,7 @@
 
 !> @version 1.0
 module mod_stochastic_logistic_model
-    use iso_fortran_env, only: int32, real32
+    use iso_fortran_env
     implicit none
 contains
 !> @brief <BRIEF_DESCRIPTION>
@@ -24,8 +24,8 @@ contains
 !> @param [<in or out or inout>] <PARAM2> <DESCRIPTION>
     subroutine compute_drift(alpha, m, x, y)
         implicit none
-        real(real32), intent(in) :: alpha, m, x
-        real(real32), intent(out) :: y
+        real(kind=8), intent(in) :: alpha, m, x
+        real(kind=8), intent(out) :: y
         y = alpha * x * (-1.0 * x ** m + 1.0)
         ! print*, "off-line alpha, m, X_t, f(X_t)", alpha, m, x, y
     end subroutine compute_drift
@@ -35,8 +35,8 @@ contains
 !> @param [<in or out or inout>] <PARAM2> <DESCRIPTION>
     subroutine compute_diffusion(sigma, x, y)
         implicit none
-        real(real32), intent(in) :: sigma, x
-        real(real32), intent(out) :: y
+        real(kind=8), intent(in) :: sigma, x
+        real(kind=8), intent(out) :: y
         y = sigma * x
     end subroutine compute_diffusion
 end module mod_stochastic_logistic_model

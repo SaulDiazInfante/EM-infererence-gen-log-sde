@@ -3,12 +3,12 @@ program mod_milstein_solver_test
     use mod_stochastic_logistic_model
     use mod_milstein_solver
     implicit none
-    real(real32) alpha_0, m_0, sigma_0, delta, brownian_start, brownian_end, &
+    real(kind=8) :: alpha_0, m_0, sigma_0, delta, brownian_start, brownian_end, &
         current_state, current_drift, current_diffusion, &
         diffusion_derivative, sigma, x_milstein_t
     integer seed
     parameter(seed=123)
-    real(real32) rn_0, rn_1, rn_2
+    real(kind=8) rn_0, rn_1, rn_2
     delta = 0.001
     current_state = 0.1
     alpha_0 = 0.8

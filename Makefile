@@ -20,14 +20,15 @@ GD := ./gen_dep.awk
 SRCS := src/mod_random_number_generator.f90 \
 	src/mod_stochastic_logistic_model.f90 \
 	src/mod_milstein_solver.f90 \
-	src/mod_brownian_motion.f90
+	src/mod_brownian_motion.f90 \
+	src/mod_path_sampler.f90
 
 TEST_SRCS := tests/mod_random_number_generator_test.f90 \
 	tests/mod_stochastic_logistic_model_test.f90 \
 	tests/mod_milstein_solver_test.f90 \
 	tests/mod_milstein_sampler_test.f90 \
-	tests/mod_brownian_motion_test.f90
-
+	tests/mod_path_sampler_test.f90 #\
+	# tests/mod_brownian_motion_test.f90
 # Add source and tests directories to search paths
 vpath % .: src
 vpath % .: tests
@@ -69,11 +70,12 @@ $(foreach dep, $(OBJS) $(TEST_OBJS), $(eval $(dep): $($(dep))))
 
 # Cleanup, filter to avoid removing source code by accident
 make run:
-	#make
+	make
 	./tests/mod_random_number_generator_test.out \
 	./tests/mod_stochastic_logistic_model_test.out \
 	./tests/mod_milstein_solver_test.out \
-	./tests/mod_milstein_sampler_test.out
+	./tests/mod_milstein_sampler_test.out \
+	./tests/mod_path_sampler_test.out
 
 clean:
 	$(RM) $(filter %.o, $(OBJS) $(TEST_OBJS)) \

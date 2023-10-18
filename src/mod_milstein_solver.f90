@@ -26,9 +26,9 @@ contains
 !> @param [in] brownian_end observation at current time plus step-size
     subroutine get_brownian_increment(delta, brownian_start, brownian_end)
         implicit none
-        real(real32), intent(in) :: delta, brownian_start 
-        real(real32), intent(out) :: brownian_end
-        real(real32) var
+        real(kind=8), intent(in) :: delta, brownian_start
+        real(kind=8), intent(out) :: brownian_end
+        real(kind=8) var
         var = boxmuller()
         brownian_end = brownian_start + sqrt(delta) * var
     end subroutine get_brownian_increment
@@ -42,11 +42,11 @@ subroutine get_milstein_iteration(delta, &
     current_state, current_drift, current_diffusion, &
     diffusion_derivative, sigma, x_next)
     implicit none
-    real(real32), intent(in) :: delta, current_state, &
+    real(kind=8), intent(in) :: delta, current_state, &
         current_drift, current_diffusion, &
         diffusion_derivative, sigma 
-    real(real32), intent(out) :: x_next
-    real(real32) euler_iteration, xx, brownian_increment
+    real(kind=8), intent(out) :: x_next
+    real(kind=8) euler_iteration, xx, brownian_increment
     xx = 0.0
     call get_brownian_increment(delta, xx, brownian_increment)
     euler_iteration = current_state + delta * current_drift &

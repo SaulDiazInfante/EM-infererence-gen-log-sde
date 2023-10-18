@@ -2,16 +2,16 @@ program mod_random_number_generator_test
   use mod_random_number_generator
   use mod_stochastic_logistic_model
   implicit none
-  real(real32) alpha0, m, sigma, x0, y_, y__
-  real(real32) sigma0, m0, delta, sigmahat, gval
+  real(kind=8) alpha0, m, sigma, x0, y_, y__
+  real(kind=8) sigma0, m0, delta, sigmahat, gval
   integer npoints, nmc, niter, nobs, n, i, j, ntray, seed
 !  parameter(sigma=0.1, alpha=0.8, m=2.0, x0=0.1)
 ! npoints is the number of observations
   parameter(npoints=1001, nmc=500, niter=50,&
 	  seed=123, nobs=1001, ntray=1000)
   parameter(n=500, m0=1.5, x0=0.1)
-  real(real32) rn_0, rn_1, rn_2
-  real(real32) x(npoints), y1(npoints), y2(npoints) 
+  real(kind=8) rn_0, rn_1, rn_2
+  real(kind=8) x(npoints), y1(npoints), y2(npoints)
   alpha0 = 0.8
   sigma0 = 0.1
   x(:) = 0.0

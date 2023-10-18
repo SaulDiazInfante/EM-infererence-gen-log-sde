@@ -1,18 +1,18 @@
 program mod_milstein_sampler_test
-    use iso_fortran_env, only : int32, real32
+    use iso_fortran_env
     use mod_random_number_generator
     use mod_stochastic_logistic_model
     use mod_milstein_solver
     implicit none!
     integer(int32) grid_size, i
-    real(real32) x_0, alpha_0, m_0, sigma_0, delta, brownian_start, t_end, &
+    real(kind=8) x_0, alpha_0, m_0, sigma_0, delta, brownian_start, t_end, &
         brownian_end, current_state, current_drift, current_diffusion, &
         diffusion_derivative, sigma, x_milstein_t
     character(len=100) :: header
     character(len=100) :: filename = './data/realization_path_gen_logistic_SDE.csv'
     character(len=1)   :: sep = ','
     parameter(grid_size=4096, x_0=0.1, t_end=16.0)
-    real(real32) x_milstein_path(grid_size)
+    real(kind=8) x_milstein_path(grid_size)
     !
     call random_init(repeatable=.true., image_distinct=.true.)
     delta = t_end / grid_size
