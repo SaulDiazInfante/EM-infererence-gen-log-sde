@@ -22,7 +22,7 @@ SRCS := src/mod_random_number_generator.f90 \
 	src/mod_milstein_solver.f90 \
 	src/mod_brownian_motion.f90 \
 	src/mod_path_sampler.f90 \
-	src/montecarlo_path_sampler.f90
+	# src/montecarlo_path_sampler.f90
 
 TEST_SRCS := tests/mod_random_number_generator_test.f90 \
 	tests/mod_stochastic_logistic_model_test.f90 \
