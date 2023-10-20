@@ -1,4 +1,5 @@
 {
     "editor.wordWrapColumn": 132,
-    "cmake.configureOnOpen": false
+    "cmake.configureOnOpen": false,
+    "fortran.fortls.disabled": true
 }
