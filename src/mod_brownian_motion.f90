@@ -4,13 +4,13 @@
 !> one-dimensional Brownian motion.
 !> @see Higham & Kloeden 2021
 module mod_brownian_motion
-  use mod_random_number_generator
-  use iso_fortran_env, only: &
+    use mod_random_number_generator
+    use iso_fortran_env, only: &
     stdin => input_unit, &
     stdout => output_unit, &
     stderr => error_unit
 
-  implicit none
+    implicit none
 contains
 !> @brief Returns a realization of a standard Brownian motion given a
 !> homogenoun stencil with L operational points and a resolution of N points.
@@ -53,7 +53,7 @@ contains
         real(kind=8), allocatable :: gaussian_sample(:), &
                 &resolution_path(:)
         character(len=100) :: header
-        character(len=100) :: filename = 'data/sample_path.csv'
+        character(len=100) :: filename = '../data/sample_path.csv'
         character(len=1)   :: sep = ','
         character(len=:), allocatable :: csv_fmt
         ! random number initialization
@@ -109,7 +109,7 @@ contains
         close(unit=1)
         if (present(debug)) then
             if(debug) then
-                filename = 'data/res_sample_path.csv'
+                filename = '../data/res_sample_path.csv'
                 open(unit=10, file=filename, status='replace', &
                 action='write', form='formatted')
                 write(10, *) header
