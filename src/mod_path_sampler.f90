@@ -17,7 +17,8 @@ contains
             &m, &
             &sigma, &
             &sample_path, &
-            &debug&
+            &debug, &
+            &filename&
     &)
 !setup
         integer(kind=4), intent(in) :: n_operative
@@ -29,9 +30,10 @@ contains
         real(kind=8), intent(out) :: sample_path(n_operative + 1)
         real(kind=8) :: euler_sample_path(n_operative + 1)
         logical, intent(in), optional :: debug
+        character(len=100), intent(in), optional :: filename
         integer(kind=4) :: i, j, fileunit
         character(len=100) :: header
-        character(len=100) :: filename = 'data/gen_log_sde_sample_path.csv'
+        character(len=100) :: default_filename
         character(len=1)   :: sep = ','
         character(len=:), allocatable :: csv_fmt, header_fmt
         sample_path = [(0.0, i=0, n_operative)]
@@ -46,14 +48,19 @@ contains
             &'|Milstein(X(t_{i}) - Euler(X(t_{i}))|'
         header_fmt ='(a4, a, a12, a, a12)'
         csv_fmt = '(i4, a, f12.8, a, f12.8)'
-        open(newunit=fileunit, file=trim(filename))
+        default_filename = '../data/gen_log_sde_sample_path.csv'
+        if(present(filename)) then
+            open(newunit=fileunit, file=trim(filename))
+            print *, filename
+        else
+            open(newunit=fileunit, file=trim(default_filename))
+        end if
+!>
         if(present(debug) .AND. debug) then
-            write(stdout, fmt=header_fmt) 'i', sep,'t_i', sep, &
-                &'X(t_i)'
+            write(stdout, fmt=header_fmt) 'i', sep,'t_i', sep, 'X(t_i)'
             write(stdout, fmt=csv_fmt) i, sep, i * h_op, sep, sample_path(0)
         else
-            write(fileunit, fmt=header_fmt) 'i', sep,'t_i', sep, &
-            &'X(t_i)'
+            write(fileunit, fmt=header_fmt) 'i', sep,'t_i', sep, 'X(t_i)'
             write(fileunit, fmt=csv_fmt) i, sep, i * h_op, sep, sample_path(0)
         end if
         do i=1, n_operative
@@ -71,7 +78,7 @@ contains
                     &x_euler, &
                     &x_next, &
                     &debug&
-                 &)
+            &)
             euler_sample_path(i) = x_euler
             sample_path(i) = x_next
             if(present(debug) .AND. debug) then
@@ -110,7 +117,6 @@ contains
         real(kind=8) :: euler_iteration
         euler_iteration = current_state + delta * current_drift &
             &+ sigma * current_state * brownian_increment
-
         if (present(x_euler)) then
             x_euler = 0.0
             x_euler = euler_iteration
