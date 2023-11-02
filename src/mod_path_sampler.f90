@@ -27,7 +27,7 @@ contains
         real(kind=8) :: brownian_increment, current_state, &
             &current_drift, current_diffusion, &
             &diffusion_derivative, x_next, x_euler
-        real(kind=8), intent(out) :: sample_path(n_operative + 1)
+        real(kind=8), allocatable, intent(out) :: sample_path(:)
         real(kind=8) :: euler_sample_path(n_operative + 1)
         logical, intent(in), optional :: debug
         character(len=100), intent(in), optional :: filename
@@ -38,8 +38,8 @@ contains
         character(len=:), allocatable :: csv_fmt, header_fmt
         sample_path = [(0.0, i=0, n_operative)]
         euler_sample_path = [(0.0, i=0, n_operative)]
-        sample_path(0) = x_0
-        euler_sample_path(0) = x_0
+        sample_path(1) = x_0
+        euler_sample_path(1) = x_0
         x_next = x_0
         x_euler = x_0
         i = 0
@@ -49,22 +49,24 @@ contains
         header_fmt ='(a4, a, a12, a, a12)'
         csv_fmt = '(i4, a, f12.8, a, f12.8)'
         default_filename = '../data/gen_log_sde_sample_path.csv'
-        if(present(filename)) then
-            open(newunit=fileunit, file=trim(filename))
-            print *, filename
-        else
-            open(newunit=fileunit, file=trim(default_filename))
-        end if
 !>
         if(present(debug) .AND. debug) then
-            write(stdout, fmt=header_fmt) 'i', sep,'t_i', sep, 'X(t_i)'
-            write(stdout, fmt=csv_fmt) i, sep, i * h_op, sep, sample_path(0)
-        else
-            write(fileunit, fmt=header_fmt) 'i', sep,'t_i', sep, 'X(t_i)'
-            write(fileunit, fmt=csv_fmt) i, sep, i * h_op, sep, sample_path(0)
+            if(present(filename)) then
+                open(newunit=fileunit, file=trim(filename))
+                print *, filename
+            else
+                open(newunit=fileunit, file=trim(default_filename))
+            end if
+            if(debug) then
+                write(stdout, fmt=header_fmt) 'i', sep,'t_i', sep, 'X(t_i)'
+                write(stdout, fmt=csv_fmt) i, sep, i * h_op, sep, sample_path(0)
+            end if
+!        else
+!            write(fileunit, fmt=header_fmt) 'i', sep,'t_i', sep, 'X(t_i)'
+!            write(fileunit, fmt=csv_fmt) i, sep, i * h_op, sep, sample_path(0)
         end if
         do i=1, n_operative
-            brownian_increment = brownian_path(i) - brownian_path(i - 1)
+            brownian_increment = brownian_path(i + 1) - brownian_path(i)
             call compute_drift(alpha, m, current_state, current_drift)
             call compute_diffusion(sigma, current_state, current_diffusion)
             call get_milstein_iteration(&
@@ -79,12 +81,14 @@ contains
                     &x_next, &
                     &debug&
             &)
-            euler_sample_path(i) = x_euler
-            sample_path(i) = x_next
+            euler_sample_path(i + 1) = x_euler
+            sample_path(i + 1) = x_next
             if(present(debug) .AND. debug) then
                 write(stdout, fmt=csv_fmt) i, sep, i * h_op, sep, x_next
             else
-                write(fileunit, fmt=csv_fmt) i, sep, i * h_op, sep, x_next
+                if(debug) then
+                    write(fileunit, fmt=csv_fmt) i, sep, i * h_op, sep, x_next
+                end if
             end if
             current_state = x_next
         end do

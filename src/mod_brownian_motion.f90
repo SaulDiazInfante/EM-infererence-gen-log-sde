@@ -53,7 +53,7 @@ contains
         real(kind=8), allocatable :: gaussian_sample(:), &
                 &resolution_path(:)
         character(len=100) :: header
-        character(len=100) :: filename = '../data/sample_path.csv'
+        character(len=100) :: filename = '../data/brownian_sample_path.csv'
         character(len=1)   :: sep = ','
         character(len=:), allocatable :: csv_fmt
         ! random number initialization
@@ -67,7 +67,7 @@ contains
         mean_a = 0.0
         std_a = 1.0
         w_inc = 0.0
-        w_t_i = 0
+        w_t_i = 0.0
         h_res = time_horizon / n_resolution
         if (r_operative_factor > 1 ) then
             h_op = r_operative_factor * h_res
@@ -81,12 +81,13 @@ contains
         brownian_path = [(0.0, i=0, n_operative)]
         gaussian_sample = [(0.0, i=1, n_resolution)]
         resolution_path = [(0.0, i=0, n_resolution)]
+!       Generating a bounch of Gaussian r.v.
         call mkl_gaussian_sampler(n_resolution, mean_a, dsqrt(h_res), &
                 &seed_put, gaussian_sample)
-        resolution_path(1:n_resolution) = &
-            &[(sum(gaussian_sample(1:i)),&
-                &i = 1,&
-                &size(gaussian_sample)&
+        resolution_path(2:n_resolution + 1) = &
+            &[(sum(gaussian_sample(1:i)), &
+                &i = 1, &
+                &size(gaussian_sample) &
             &)]
         j = 1
         header = 'i' // sep // 't_i' // sep // 'W(t_i)'
@@ -97,19 +98,19 @@ contains
         200 format(i4, a, f9.5, a, f9.5)
         write(1, *) header
         write(1, fmt=csv_fmt) 0, sep, 0.0, sep, 0.0
-        do j=1, n_operative
+        do j=1, n_operative 
             idx_start = r_operative_factor * (j - 1) + 1
             idx_end = r_operative_factor * j
             w_inc = sum(gaussian_sample(idx_start:idx_end))
             !print *, "dWk_i: ", w_inc
-            brownian_path(j) = w_inc
             w_t_i = w_t_i + w_inc
+            brownian_path(j + 1) = w_t_i
             write(1, fmt=csv_fmt) j, sep, j * h_op, sep, w_t_i
         end do
         close(unit=1)
         if (present(debug)) then
             if(debug) then
-                filename = '../data/res_sample_path.csv'
+                filename = '../data/res_brownian_sample_path.csv'
                 open(unit=10, file=filename, status='replace', &
                 action='write', form='formatted')
                 write(10, *) header
