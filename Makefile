@@ -23,7 +23,8 @@ SRCS := src/mod_random_number_generator.f90 \
 	src/mod_stochastic_logistic_model.f90 \
 	src/mod_milstein_solver.f90 \
 	src/mod_brownian_motion.f90 \
-	src/mod_path_sampler.f90
+	src/mod_path_sampler.f90 \
+	src/mod_montecarlo_path_sampler.f90
 
 TEST_SRCS := tests/mod_random_number_generator_test.f90 \
 	tests/mod_stochastic_logistic_model_test.f90 \
@@ -31,7 +32,7 @@ TEST_SRCS := tests/mod_random_number_generator_test.f90 \
 	tests/mod_milstein_sampler_test.f90 \
 	tests/mod_path_sampler_test.f90 \
 	tests/mod_brownian_motion_test.f90 \
-	tests/mod_montecarlo_path_sampler_test.f90
+	tests/mod_montecarlo_path_sampler_test_dev.f90
 # Add source and tests directories to search paths
 vpath % .: src
 vpath % .: tests
