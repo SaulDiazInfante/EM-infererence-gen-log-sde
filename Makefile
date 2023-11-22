@@ -32,7 +32,7 @@ TEST_SRCS := tests/mod_random_number_generator_test.f90 \
 	tests/mod_milstein_sampler_test.f90 \
 	tests/mod_path_sampler_test.f90 \
 	tests/mod_brownian_motion_test.f90 \
-	tests/mod_montecarlo_path_sampler_test_dev.f90
+	tests/mod_montecarlo_path_sampler_test.f90
 # Add source and tests directories to search paths
 vpath % .: src
 vpath % .: tests
@@ -84,6 +84,5 @@ make run:
 clean:
 	$(RM) $(filter %.o, $(OBJS) $(TEST_OBJS)) \
 	$(filter %.d, $(DEPS) $(TEST_DEPS)) \
-	$(filter %.out, $(TEST_BIN)) $(LIB) \
+	$(filter %.out, $(TEST_BIN)) $(LIB)#\
 	$(wildcard *.mod)
-

@@ -28,9 +28,7 @@ long_line_behaviour=1
 long_line_column=80
 
 [files]
-current_page=1
-FILE_NAME_0=1107;Fortran;0;EUTF-8;0;1;1;%2Fhome%2Fsaul%2FInsync%2Fsauld%40cimat.mx%2FGoogle%20Drive%2FUNISON%2FArticles%2FInferenceWithSDEs%2Ftests%2Fmod_path_sampler_test.f90;0;4
-FILE_NAME_1=0;Fortran;0;EUTF-8;0;1;1;%2Fhome%2Fsaul%2FInsync%2Fsauld%40cimat.mx%2FGoogle%20Drive%2FUNISON%2FArticles%2FInferenceWithSDEs%2Fdev%2FgenLogSDE%2Fmain.f90;0;2
+current_page=-1
 
 [VTE]
-last_dir=/home/saul/Insync/sauld@cimat.mx/Google Drive/UNISON/Articles/InferenceWithSDEs/dev/genLogSDE
+last_dir=/home/saul/Insync/saul.diazinfante@unison.mx/OneDrive Biz/ModernFortran/json_tutorial

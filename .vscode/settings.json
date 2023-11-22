@@ -1,5 +1,7 @@
 {
     "editor.wordWrapColumn": 132,
     "cmake.configureOnOpen": false,
-    "fortran.fortls.disabled": true
+    "fortran.fortls.disabled": true,
+    "workbench.commandPalette.experimental.suggestCommands": true,
+    "workbench.commandPalette.preserveInput": true
 }
